@@ -26,6 +26,7 @@ public class Utilities {
         File listFile[] = dir.listFiles();
 
         if (listFile != null) {
+
             for (int i = 0; i < listFile.length; i++) {
                 if (listFile[i].isDirectory()) {
                     walkdir(listFile[i]);
@@ -44,6 +45,7 @@ public class Utilities {
     }
 
     public static File[] getPdfFiles(){
+        pdfFiles=new ArrayList<>();
         return walkdir(Environment.getExternalStorageDirectory());
     }
 
