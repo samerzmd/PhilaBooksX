@@ -54,14 +54,24 @@ public class Net {
 
         @FormUrlEncoded
         @POST("/pdf/api/users/login")
-        void login(@Field("email")String email, @Field("pass") String password, Callback<Object> callback);
+        void login(@Field("email")String email, @Field("pass") String password, Callback<User> callback);
 
         @FormUrlEncoded
         @POST("/pdf/api/users/saveuser")
         void signUp(@Field("id")String id, @Field("name")String name, @Field("email")String email, @Field("pass") String password, Callback<Object> callback);
 
-        @Multipart
+        @FormUrlEncoded
         @POST("/pdf/api/pdf/savePdf")
-        void savePdf(@Field("UserId") String UserId, @Field("Name") String Name, @Part("upload_path")TypedFile upload_path, Callback<Object> callback);
+        void savePdf( @Field("UserID") String UserId, @Field("Name") String Name,@Field("PDF_Name") String PDF_Name, Callback<Object> callback);
+
+
+        @Multipart
+        @POST("/pdf/api/pdf/uploadPDF")
+        void uploadPDF(@Part("PDF")TypedFile PDF,Callback<PDF>callback);
+
+        @FormUrlEncoded
+        @POST("/pdf/api/pdf/PDFs")
+        void PDFs( @Field("UserID") String UserId,Callback<PDFs> callback);
+
     }
 }

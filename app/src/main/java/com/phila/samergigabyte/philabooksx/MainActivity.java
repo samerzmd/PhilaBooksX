@@ -42,20 +42,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
-        Net.apiClient(this).login("ss@ss", "12121", new Callback<Object>() {
-            @Override
-            public void success(Object s, Response response) {
-                Log.d("shhiiiit",s.toString());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("lol",error.toString());
-            }
-        });
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,55 +58,54 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        ArrayList books=new ArrayList();
-        OnlineBook first=new OnlineBook();
-        first.title="first";
-        books.add(first);
+        booksSetup();
 
-        OnlineBook second=new OnlineBook();
-        second.title="second";
-        books.add(second);
 
-        OnlineBook third=new OnlineBook();
-        third.title="third";
-        books.add(third);
+    }
 
-        OnlineBook forth=new OnlineBook();
-        forth.title="forth";
-        books.add(forth);
+    private void booksSetup() {
 
-        OnlineBook fifth=new OnlineBook();
-        fifth.title="fifth";
-        books.add(fifth);
+        Net.apiClient(MainActivity.this).PDFs("",new Callback<PDFs>() {
+            @Override
+            public void success(PDFs pdFs, Response response) {
+                ArrayList books=new ArrayList();
+                for (PDFs.pdf x :pdFs.PDFs){
+                    OnlineBook book=new OnlineBook();
+                    book.bookUrl="79.134.150.46/PDF/uploads/pdfs/"+x.file+".pdf";
+                    book.title=x.name;
+                    books.add(book);
+                }
+                OnlineBooksGridAdapter adapter=new OnlineBooksGridAdapter(books,MainActivity.this);
 
-        OnlineBook sixth=new OnlineBook();
-        sixth.title="sixth";
-        books.add(sixth);
+                StaggeredGridView gridView = (StaggeredGridView) findViewById(R.id.grid_view);
+                gridView.setAdapter(adapter);
 
-        OnlineBook seventh=new OnlineBook();
-        seventh.title="seventh";
-        books.add(seventh);
+                File[] va= Utilities.getPdfFiles();
+                ArrayList<OfflineBook>offLibeBooks=new ArrayList<OfflineBook>();
+                for (int i=0;i<va.length;i++){
+                    OfflineBook book=new OfflineBook();
+                    book.path=va[i].getPath();
+                    book.title=va[i].getName();
+                    offLibeBooks.add(book);
+                }
+                StaggeredGridView gridView1 = (StaggeredGridView) findViewById(R.id.grid_view1);
 
-        OnlineBooksGridAdapter adapter=new OnlineBooksGridAdapter(books,this);
+                OfflineBooksGridAdapter offlineBooksGridAdapter=new OfflineBooksGridAdapter(offLibeBooks,MainActivity.this);
+                gridView1.setAdapter(offlineBooksGridAdapter);
 
-        StaggeredGridView gridView = (StaggeredGridView) findViewById(R.id.grid_view);
-        gridView.setAdapter(adapter);
+                Utilities.setListViewHeightBasedOnChildren(gridView);
+                Utilities.setListViewHeightBasedOnChildren(gridView1);
+            }
 
-        File[] va= Utilities.getPdfFiles();
-        ArrayList<OfflineBook>offLibeBooks=new ArrayList<OfflineBook>();
-        for (int i=0;i<va.length;i++){
-            OfflineBook book=new OfflineBook();
-            book.path=va[i].getPath();
-            book.title=va[i].getName();
-            offLibeBooks.add(book);
-        }
-        StaggeredGridView gridView1 = (StaggeredGridView) findViewById(R.id.grid_view1);
+            @Override
+            public void failure(RetrofitError error) {
 
-        OfflineBooksGridAdapter offlineBooksGridAdapter=new OfflineBooksGridAdapter(offLibeBooks,this);
-        gridView1.setAdapter(offlineBooksGridAdapter);
+            }
+        });
 
-        Utilities.setListViewHeightBasedOnChildren(gridView);
-        Utilities.setListViewHeightBasedOnChildren(gridView1);
+
+
+
 
 
     }
@@ -189,17 +174,30 @@ public class MainActivity extends AppCompatActivity
                 attachmentPath = FileUtils.getPath(MainActivity.this, data.getData());
                 if (false == TextUtils.isEmpty(attachmentPath)) {
                     selectedFile = new File(attachmentPath);
-                    TypedFile typedFile = new TypedFile("multipart/form-data", new File(attachmentPath));
+                    final TypedFile typedFile = new TypedFile("multipart/form-data", new File(attachmentPath));
 
-                    Net.apiClient(this).savePdf("ss@ss", "12121",typedFile, new Callback<Object>() {
+                    Net.apiClient(this).uploadPDF(typedFile, new Callback<PDF>() {
                         @Override
-                        public void success(Object s, Response response) {
-                            Log.d("shhiiiit",s.toString());
+                        public void success(PDF s, Response response) {
+                            if(s.PDF!=null){
+                                Net.apiClient(MainActivity.this).savePdf(((MyAppClass) getApplicationContext()).mCurrentUser.Users.id.toString(), typedFile.fileName(), s.PDF, new Callback<Object>() {
+                                    @Override
+                                    public void success(Object o, Response response) {
+                                        Log.d("shiiiiiiiii",o.toString());
+                                        booksSetup();
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+
+                                    }
+                                });
+                            }
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Log.d("lol",error.toString());
+                            Log.d("lol", error.toString());
                         }
                     });
 

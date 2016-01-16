@@ -29,6 +29,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,6 +287,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    public void SignUp(View view) {
+        Intent o=new Intent(LoginActivity.this,SignUpActivity.class);
+        startActivity(o);
+    }
+
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -335,23 +341,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-               Net.apiClient(LoginActivity.this).login(mEmail, mPassword, new Callback<Object>() {
+               Net.apiClient(LoginActivity.this).login(mEmail, mPassword, new Callback<User>() {
                    @Override
-                   public void success(Object o, Response response) {
-                       runOnUiThread(new Runnable() {
-                           @Override
-                           public void run() {
+                   public void success(User o, Response response) {
+                       try{
+                           if(o.Users!=null& Integer.parseInt(o.Users.id)>0){
+                               ((MyAppClass)getApplicationContext()).mCurrentUser=o;
                                Intent oIntent=new Intent(LoginActivity.this,MainActivity.class);
                                startActivity(oIntent);
                            }
-                       });
-
-
+                       }
+                       catch (Exception e){
+                           Toast.makeText(LoginActivity.this, "something wrong", Toast.LENGTH_SHORT).show();
+                           finish();
+                       }
                    }
 
                    @Override
                    public void failure(RetrofitError error) {
-
+                       Toast.makeText(LoginActivity.this,"Communication Error",Toast.LENGTH_SHORT).show();
+                       finish();
                    }
                });
             } else {
