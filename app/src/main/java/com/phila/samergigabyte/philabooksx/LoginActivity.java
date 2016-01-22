@@ -74,6 +74,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if(((MyAppClass)getApplication()).mCurrentUser!=null){
+            showLoading();
+
+            Net.apiClient(LoginActivity.this).login(((MyAppClass)getApplication()).mCurrentUser.Users.email, ((MyAppClass)getApplication()).mCurrentUser.Users.password, new Callback<User>() {
+                @Override
+                public void success(User o, Response response) {
+                    try{
+                        if(o.Users!=null& Integer.parseInt(o.Users.id)>0){
+                             String pass=((MyAppClass)getApplication()).mCurrentUser.Users.password;
+                            ((MyAppClass)getApplicationContext()).mCurrentUser=o;
+                            ((MyAppClass)getApplicationContext()).mCurrentUser.Users.password=pass;
+                            Utilities.saveUserToSharedPerff(o,LoginActivity.this);
+                            Intent oIntent=new Intent(LoginActivity.this,MainActivity.class);
+                            startActivity(oIntent);
+                            finish();
+                        }
+                    }
+                    catch (Exception e){
+                        Toast.makeText(LoginActivity.this, "something wrong", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Toast.makeText(LoginActivity.this,"Communication Error",Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        }
+
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -100,6 +133,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void showLoading() {
+        mProgressView = findViewById(R.id.login_progress);
+        mProgressView.setVisibility(View.VISIBLE);
     }
 
     private void populateAutoComplete() {
@@ -347,8 +385,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                        try{
                            if(o.Users!=null& Integer.parseInt(o.Users.id)>0){
                                ((MyAppClass)getApplicationContext()).mCurrentUser=o;
+                               ((MyAppClass)getApplicationContext()).mCurrentUser.Users.password=mPassword;
+                               Utilities.saveUserToSharedPerff(o,LoginActivity.this);
                                Intent oIntent=new Intent(LoginActivity.this,MainActivity.class);
                                startActivity(oIntent);
+                               finish();
                            }
                        }
                        catch (Exception e){
@@ -375,5 +416,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+
+
 }
 

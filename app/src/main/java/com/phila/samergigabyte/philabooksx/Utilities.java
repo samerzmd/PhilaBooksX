@@ -2,6 +2,7 @@ package com.phila.samergigabyte.philabooksx;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -97,5 +99,12 @@ public class Utilities {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(activity.getApplicationContext(), "No suitable File Manager was found.", Toast.LENGTH_SHORT).show();
         }
+    }
+    public static void saveUserToSharedPerff(User o, Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("theone",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String obj= new Gson().toJson(o);
+        editor.putString("user", obj);
+        editor.commit();
     }
 }

@@ -8,9 +8,9 @@
         android:id="@+id/image"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:src="@drawable/book_image"
-        android:scaleType="fitXY" />
+        android:scaleType="centerCrop" />
 <TextView
     android:textAllCaps="true"
     android:layout_below="@id/image"
@@ -19,7 +19,7 @@
     android:layout_height="wrap_content"
     android:text="Book"
     android:fontFamily="sans-serif"
-    android:textSize="35sp"
+    android:textSize="15sp"
     android:textStyle="bold"
     android:textColor="@color/md_blue_50"
     android:id="@+id/title"

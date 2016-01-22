@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,7 +20,6 @@ import com.phila.samergigabyte.R;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -148,11 +146,27 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
+        if (id == R.id.search) {
             Intent o=new Intent(this,SearchActivity.class);
             startActivity(o);
 
-        } 
+        }
+        else if (id==R.id.logout){
+            ((MyAppClass)getApplication()).mCurrentUser=null;
+            Utilities.saveUserToSharedPerff(null,MainActivity.this);
+            Intent o=new Intent(this,LoginActivity.class);
+            startActivity(o);
+            finish();
+        }
+
+        else if(id==R.id.about){
+            Intent o=new Intent(this,About.class);
+            startActivity(o);
+
+        }
+        else if(id==R.id.add){
+            Utilities.openFile("*/*",0,MainActivity.this);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -2,11 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_camara" android:icon="@android:drawable/ic_menu_camera"
+        <item android:id="@+id/search" android:icon="@android:drawable/ic_menu_camera"
             android:title="Search" />
+        <item android:id="@+id/add" android:icon="@android:drawable/ic_input_add"
+            android:title="Upload Books" />
 
     </group>
 
+<group>
+    <item android:id="@+id/about" android:icon="@android:drawable/ic_dialog_info"
+        android:title="About Us" />
+    <item android:id="@+id/logout" android:icon="@android:drawable/ic_delete"
+        android:title="logout" />
 
+</group>
 
 </menu>
