@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Phila Books</string>
+    <string name="app_name">eBook Case</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_pdf_view">PdfViewActivity</string>
-    <string name="title_activity_login">Phila Books</string>
+    <string name="title_activity_login">eBook Case</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
